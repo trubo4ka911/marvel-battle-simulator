@@ -1,0 +1,44 @@
+@import "variables";
+@import "mixins";
+
+.character-details {
+  @include flex-center;
+  flex-direction: column;
+  margin-top: 20px;
+
+  img {
+    width: 300px;
+    border-radius: 8px;
+    margin-bottom: 20px;
+  }
+
+  ul {
+    list-style-type: none;
+    padding: 0;
+  }
+
+  li {
+    margin: 5px 0;
+  }
+}
+.tabs button {
+  padding: 10px;
+  margin-right: 5px;
+  background-color: transparent;
+  border: none;
+  border-bottom: 3px solid transparent;
+  cursor: pointer;
+  &:hover,
+  &.active {
+    border-bottom-color: $primary-color;
+  }
+}
+
+.tab-content ul {
+  list-style: none;
+  padding: 0;
+}
+
+.tab-content li {
+  margin: 5px 0;
+}
