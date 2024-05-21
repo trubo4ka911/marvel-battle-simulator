@@ -1,35 +1,42 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { useSelector, useDispatch } from "react-redux";
 import PropTypes from "prop-types";
 import { resetBattle, setResults } from "../features/battle/battleSlice";
+import { fetchCharacters } from "../features/characters/characterSlice"; // Make sure this is imported
 import { simulateBattle } from "../utils/battleLogic";
 import Character from "./Character";
 import "../styles/battleArena.scss";
 
-// Set default value for characters directly in the function signature
 const BattleArena = ({ characters = [] }) => {
   const [selectedCharacters, setSelectedCharacters] = useState([]);
+  const [visibleCount, setVisibleCount] = useState(30); // Ensure this matches initial fetch size or manage dynamically
+  const loadIncrement = 20; // Adjust if different from initial fetch size
+  const totalCharacters = useSelector((state) => state.characters.total);
   const dispatch = useDispatch();
   const results = useSelector((state) => state.battle.results);
 
-  if (!characters.length) {
-    return <div>No characters available</div>;
-  }
+  useEffect(() => {
+    if (!characters.length) {
+      dispatch(fetchCharacters({ limit: 30, offset: 0 })); // Fetch initial characters if none are loaded
+    }
+  }, [dispatch, characters.length]);
 
   const handleSelectCharacter = (character) => {
     setSelectedCharacters((prev) => {
-      if (
-        prev.includes(character) ||
-        (prev.length >= 2 && !prev.includes(character))
-      ) {
-        return prev.filter((c) => c !== character); // This allows toggling selection on and off
-      }
-      return [...prev, character];
+      return prev.includes(character)
+        ? prev.filter((c) => c !== character) // Toggle selection off if already selected
+        : [...prev, character].slice(-2); // Keep only the last two characters
     });
   };
 
+  const handleLoadMore = () => {
+    if (visibleCount < totalCharacters) {
+      setVisibleCount((prevCount) => prevCount + loadIncrement);
+      dispatch(fetchCharacters({ limit: loadIncrement, offset: visibleCount }));
+    }
+  };
+
   const handleBattle = () => {
-    // Ensure two unique characters are selected
     if (selectedCharacters.length === 2) {
       const winner = simulateBattle(
         selectedCharacters[0],
@@ -40,33 +47,27 @@ const BattleArena = ({ characters = [] }) => {
   };
 
   const handleReset = () => {
-    setSelectedCharacters([]); // Clear selected characters
+    setSelectedCharacters([]);
     dispatch(resetBattle());
-  };
-  const characterButtonClass = (character) => {
-    return selectedCharacters.includes(character) ? "selected" : "";
   };
 
   return (
     <div className="battle-arena">
-      <h2 className="battle-arena-title">Battle Arena</h2>
+      <h2>Battle Arena</h2>
       {results && (
-        <div className="battle-results">
-          <h3 className="winner-announcement">Winner: {results.name}</h3>
-          <button
-            className="reset-battle-button"
-            onClick={() => dispatch(resetBattle())}
-          >
-            Reset Battle
-          </button>
+        <div>
+          <h3>Winner: {results.name}</h3>
+          <button onClick={handleReset}>Reset Battle</button>
         </div>
       )}
-      <h2 className="battle-setup-title">Select two characters to battle</h2>
+      <h2>Select two characters to battle</h2>
       <div className="character-list">
-        {characters.map((character) => (
+        {characters.slice(0, visibleCount).map((character) => (
           <button
             key={character.id}
-            className={`character-button ${characterButtonClass(character)}`}
+            className={`character-button ${
+              selectedCharacters.includes(character) ? "selected" : ""
+            }`}
             onClick={() => handleSelectCharacter(character)}
             disabled={
               selectedCharacters.length >= 2 &&
@@ -81,21 +82,12 @@ const BattleArena = ({ characters = [] }) => {
           </button>
         ))}
       </div>
-      <button
-        className="battle-button"
-        onClick={handleBattle}
-        disabled={selectedCharacters.length !== 2}
-      >
+      {visibleCount < totalCharacters && (
+        <button onClick={handleLoadMore}>Load More</button>
+      )}
+      <button onClick={handleBattle} disabled={selectedCharacters.length !== 2}>
         Battle!
       </button>
-      {selectedCharacters.length === 2 && (
-        <div className="pre-battle-summary">
-          <p>
-            Battle between {selectedCharacters[0].name} and{" "}
-            {selectedCharacters[1].name}
-          </p>
-        </div>
-      )}
     </div>
   );
 };
