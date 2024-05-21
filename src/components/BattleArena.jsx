@@ -73,6 +73,10 @@ const BattleArena = ({ characters = [] }) => {
               !selectedCharacters.includes(character)
             }
           >
+            <img
+              src={`${character.thumbnail.path}.${character.thumbnail.extension}`}
+              alt={character.name}
+            />
             {character.name}
           </button>
         ))}

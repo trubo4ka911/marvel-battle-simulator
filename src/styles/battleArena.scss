@@ -67,3 +67,27 @@
     }
   }
 }
+
+.character-button {
+  display: flex;
+  align-items: center;
+  gap: 10px; // Creates space between the image and the text
+
+  img {
+    width: 50px; // Set a fixed width for images
+    height: 50px; // Set a fixed height for images
+    object-fit: cover; // Ensures the image covers the area without distorting aspect ratio
+    border-radius: 50%; // Makes the image round
+  }
+
+  &:hover,
+  &.selected {
+    background-color: #4caf50;
+    color: white;
+  }
+
+  &:disabled {
+    background-color: #ccc;
+    cursor: not-allowed;
+  }
+}
