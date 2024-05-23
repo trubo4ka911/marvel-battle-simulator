@@ -16,10 +16,17 @@ const BattleArena = ({ characters = [] }) => {
   const results = useSelector((state) => state.battle.results);
 
   useEffect(() => {
-    if (!characters.length) {
-      dispatch(fetchCharacters({ limit: 30, offset: 0 })); // Fetch initial characters if none are loaded
+    // Initial fetch, ensure this runs only once or based on specific conditions
+    if (characters.length === 0 && totalCharacters === 0) {
+      dispatch(fetchCharacters({ limit: 30, offset: 0 }));
     }
-  }, [dispatch, characters.length]);
+  }, [dispatch]); // Removing characters.length from dependencies if it causes extra fetches
+
+  useEffect(() => {
+    console.log(
+      `Fetching characters with offset ${characters.length} and limit ${loadIncrement}`
+    );
+  }, [characters.length]);
 
   const handleSelectCharacter = (character) => {
     setSelectedCharacters((prev) => {
@@ -30,9 +37,12 @@ const BattleArena = ({ characters = [] }) => {
   };
 
   const handleLoadMore = () => {
-    if (visibleCount < totalCharacters) {
-      setVisibleCount((prevCount) => prevCount + loadIncrement);
-      dispatch(fetchCharacters({ limit: loadIncrement, offset: visibleCount }));
+    const currentLength = characters.length; // Use characters.length to determine the current offset
+    if (currentLength < totalCharacters) {
+      dispatch(
+        fetchCharacters({ limit: loadIncrement, offset: currentLength })
+      );
+      setVisibleCount((prev) => prev + loadIncrement); // Increment visibleCount after fetching new characters
     }
   };
 

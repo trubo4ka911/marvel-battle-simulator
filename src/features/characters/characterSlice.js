@@ -39,11 +39,16 @@ const characterSlice = createSlice({
       .addCase(fetchCharacters.pending, (state) => {
         state.status = "loading";
       })
+      // Within characterSlice's extraReducers
       .addCase(fetchCharacters.fulfilled, (state, action) => {
         state.status = "succeeded";
-        state.characters = [...state.characters, ...action.payload.results]; // Append new characters
-        state.total = action.payload.total; // Update total count
+        const newCharacters = action.payload.results.filter(
+          (newChar) => !state.characters.some((char) => char.id === newChar.id)
+        );
+        state.characters = [...state.characters, ...newCharacters]; // Append new characters
+        state.total = action.payload.total; // Update total characters count if provided
       })
+
       .addCase(fetchCharacters.rejected, (state, action) => {
         state.status = "failed";
         state.error = action.error.message;
