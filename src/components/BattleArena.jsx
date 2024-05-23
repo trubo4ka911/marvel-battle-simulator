@@ -83,7 +83,9 @@ const BattleArena = ({ characters = [] }) => {
         ))}
       </div>
       {visibleCount < totalCharacters && (
-        <button onClick={handleLoadMore}>Load More</button>
+        <button className="load-more-button" onClick={handleLoadMore}>
+          Load More
+        </button>
       )}
       <button onClick={handleBattle} disabled={selectedCharacters.length !== 2}>
         Battle!
