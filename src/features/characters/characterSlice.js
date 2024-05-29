@@ -1,5 +1,5 @@
 // src/features/characters/characterSlice.js
-import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
+import { createSlice, createAsyncThunk } from "@reduxjs/toolkit";
 import axios from "axios";
 import { generateHash } from "../../utils/auth";
 
@@ -9,19 +9,13 @@ const apiBaseURL = "https://gateway.marvel.com/v1/public";
 
 export const fetchCharacters = createAsyncThunk(
   "characters/fetchCharacters",
-  async ({ limit = 20, offset = 0 }, { getState }) => {
-    const timeStamp = new Date().getTime();
-    const hash = generateHash(timeStamp, API_PRIVATE_KEY, API_PUBLIC_KEY);
-    const response = await axios.get(`${apiBaseURL}/characters`, {
-      params: {
-        ts: timeStamp,
-        apikey: API_PUBLIC_KEY,
-        hash,
-        limit,
-        offset,
-      },
-    });
-    return response.data.data;
+  async () => {
+    const ts = Date.now();
+    const hash = generateHash(ts, API_PRIVATE_KEY, API_PUBLIC_KEY);
+    const url = `${apiBaseURL}/characters?ts=${ts}&apikey=${API_PUBLIC_KEY}&hash=${hash}`;
+
+    const response = await axios.get(url);
+    return response.data.data.results;
   }
 );
 
@@ -31,24 +25,16 @@ const characterSlice = createSlice({
     characters: [],
     status: "idle",
     error: null,
-    total: 0, // Assuming you need to track total number of characters available
   },
-  reducers: {},
   extraReducers: (builder) => {
     builder
       .addCase(fetchCharacters.pending, (state) => {
         state.status = "loading";
       })
-      // Within characterSlice's extraReducers
       .addCase(fetchCharacters.fulfilled, (state, action) => {
         state.status = "succeeded";
-        const newCharacters = action.payload.results.filter(
-          (newChar) => !state.characters.some((char) => char.id === newChar.id)
-        );
-        state.characters = [...state.characters, ...newCharacters]; // Append new characters
-        state.total = action.payload.total; // Update total characters count if provided
+        state.characters = action.payload;
       })
-
       .addCase(fetchCharacters.rejected, (state, action) => {
         state.status = "failed";
         state.error = action.error.message;
