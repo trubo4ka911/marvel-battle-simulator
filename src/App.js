@@ -1,3 +1,4 @@
+// src/App.jsx
 import React, { useEffect } from "react";
 import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
@@ -10,7 +11,7 @@ function App() {
   const dispatch = useDispatch();
 
   useEffect(() => {
-    dispatch(fetchCharacters());
+    dispatch(fetchCharacters({ limit: 30, offset: 0, searchTerm: "" }));
   }, [dispatch]);
 
   const characters = useSelector((state) => state.characters.characters);

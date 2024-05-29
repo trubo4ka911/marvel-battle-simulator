@@ -9,13 +9,21 @@ const apiBaseURL = "https://gateway.marvel.com/v1/public";
 
 export const fetchCharacters = createAsyncThunk(
   "characters/fetchCharacters",
-  async () => {
+  async ({ limit, offset, searchTerm = "" }) => {
     const ts = Date.now();
     const hash = generateHash(ts, API_PRIVATE_KEY, API_PUBLIC_KEY);
-    const url = `${apiBaseURL}/characters?ts=${ts}&apikey=${API_PUBLIC_KEY}&hash=${hash}`;
+    let url = `${apiBaseURL}/characters?ts=${ts}&apikey=${API_PUBLIC_KEY}&hash=${hash}&limit=${limit}&offset=${offset}`;
+
+    if (searchTerm) {
+      url += `&nameStartsWith=${searchTerm}`;
+    }
 
     const response = await axios.get(url);
-    return response.data.data.results;
+    return {
+      characters: response.data.data.results,
+      total: response.data.data.total,
+      searchTerm,
+    };
   }
 );
 
@@ -25,6 +33,8 @@ const characterSlice = createSlice({
     characters: [],
     status: "idle",
     error: null,
+    total: 0,
+    searchTerm: "",
   },
   extraReducers: (builder) => {
     builder
@@ -33,7 +43,16 @@ const characterSlice = createSlice({
       })
       .addCase(fetchCharacters.fulfilled, (state, action) => {
         state.status = "succeeded";
-        state.characters = action.payload;
+        if (action.payload.searchTerm !== state.searchTerm) {
+          state.characters = action.payload.characters;
+          state.searchTerm = action.payload.searchTerm;
+        } else {
+          state.characters = [
+            ...state.characters,
+            ...action.payload.characters,
+          ];
+        }
+        state.total = action.payload.total;
       })
       .addCase(fetchCharacters.rejected, (state, action) => {
         state.status = "failed";

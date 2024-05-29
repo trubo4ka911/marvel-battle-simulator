@@ -1,48 +1,54 @@
+// src/components/BattleArena.jsx
 import React, { useState, useEffect } from "react";
 import { useSelector, useDispatch } from "react-redux";
 import PropTypes from "prop-types";
 import { resetBattle, setResults } from "../features/battle/battleSlice";
-import { fetchCharacters } from "../features/characters/characterSlice"; // Make sure this is imported
+import { fetchCharacters } from "../features/characters/characterSlice";
 import { simulateBattle } from "../utils/battleLogic";
 import Character from "./Character";
 import "../styles/battleArena.scss";
 
 const BattleArena = ({ characters = [] }) => {
   const [selectedCharacters, setSelectedCharacters] = useState([]);
-  const [visibleCount, setVisibleCount] = useState(30); // Ensure this matches initial fetch size or manage dynamically
-  const loadIncrement = 20; // Adjust if different from initial fetch size
+  const [visibleCount, setVisibleCount] = useState(30);
+  const [searchTerm, setSearchTerm] = useState("");
+  const loadIncrement = 20;
   const totalCharacters = useSelector((state) => state.characters.total);
   const dispatch = useDispatch();
   const results = useSelector((state) => state.battle.results);
 
   useEffect(() => {
-    // Initial fetch, ensure this runs only once or based on specific conditions
     if (characters.length === 0 && totalCharacters === 0) {
-      dispatch(fetchCharacters({ limit: 30, offset: 0 }));
+      dispatch(fetchCharacters({ limit: 30, offset: 0, searchTerm: "" }));
     }
-  }, [dispatch]); // Removing characters.length from dependencies if it causes extra fetches
+  }, [dispatch, characters.length, totalCharacters]);
 
   useEffect(() => {
-    console.log(
-      `Fetching characters with offset ${characters.length} and limit ${loadIncrement}`
-    );
-  }, [characters.length]);
+    if (searchTerm) {
+      setVisibleCount(30);
+      dispatch(fetchCharacters({ limit: 30, offset: 0, searchTerm }));
+    }
+  }, [dispatch, searchTerm]);
 
   const handleSelectCharacter = (character) => {
-    setSelectedCharacters((prev) => {
-      return prev.includes(character)
-        ? prev.filter((c) => c !== character) // Toggle selection off if already selected
-        : [...prev, character].slice(-2); // Keep only the last two characters
-    });
+    setSelectedCharacters((prev) =>
+      prev.includes(character)
+        ? prev.filter((c) => c !== character)
+        : [...prev, character].slice(-2)
+    );
   };
 
   const handleLoadMore = () => {
-    const currentLength = characters.length; // Use characters.length to determine the current offset
+    const currentLength = characters.length;
     if (currentLength < totalCharacters) {
       dispatch(
-        fetchCharacters({ limit: loadIncrement, offset: currentLength })
+        fetchCharacters({
+          limit: loadIncrement,
+          offset: currentLength,
+          searchTerm,
+        })
       );
-      setVisibleCount((prev) => prev + loadIncrement); // Increment visibleCount after fetching new characters
+      setVisibleCount((prev) => prev + loadIncrement);
     }
   };
 
@@ -61,6 +67,12 @@ const BattleArena = ({ characters = [] }) => {
     dispatch(resetBattle());
   };
 
+  const handleSearch = (event) => {
+    event.preventDefault();
+    setVisibleCount(30);
+    setSearchTerm(event.target.value);
+  };
+
   return (
     <div className="battle-arena">
       <h2>Battle Arena</h2>
@@ -71,10 +83,19 @@ const BattleArena = ({ characters = [] }) => {
         </div>
       )}
       <h2>Select two characters to battle</h2>
+      <form onSubmit={handleSearch}>
+        <input
+          type="text"
+          value={searchTerm}
+          onChange={(e) => setSearchTerm(e.target.value)}
+          placeholder="Search for a character"
+        />
+        <button type="submit">Search</button>
+      </form>
       <div className="character-list">
         {characters.slice(0, visibleCount).map((character) => (
           <button
-            key={character.id}
+            key={`${character.id}-${character.name}`} // Ensure unique key by combining id and name
             className={`character-button ${
               selectedCharacters.includes(character) ? "selected" : ""
             }`}
