@@ -1,9 +1,12 @@
 // src/components/BattleArena.jsx
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useRef } from "react";
 import { useSelector, useDispatch } from "react-redux";
 import PropTypes from "prop-types";
 import { resetBattle, setResults } from "../features/battle/battleSlice";
-import { fetchCharacters } from "../features/characters/characterSlice";
+import {
+  fetchCharacters,
+  clearCharacters,
+} from "../features/characters/characterSlice";
 import { simulateBattle } from "../utils/battleLogic";
 import Character from "./Character";
 import "../styles/battleArena.scss";
@@ -14,17 +17,21 @@ const BattleArena = ({ characters = [] }) => {
   const [searchTerm, setSearchTerm] = useState("");
   const loadIncrement = 20;
   const totalCharacters = useSelector((state) => state.characters.total);
+  const status = useSelector((state) => state.characters.status);
   const dispatch = useDispatch();
   const results = useSelector((state) => state.battle.results);
+  const initialFetch = useRef(true);
 
   useEffect(() => {
-    if (characters.length === 0 && totalCharacters === 0) {
+    if (initialFetch.current) {
       dispatch(fetchCharacters({ limit: 30, offset: 0, searchTerm: "" }));
+      initialFetch.current = false;
     }
-  }, [dispatch, characters.length, totalCharacters]);
+  }, [dispatch]);
 
   useEffect(() => {
     if (searchTerm) {
+      dispatch(clearCharacters());
       setVisibleCount(30);
       dispatch(fetchCharacters({ limit: 30, offset: 0, searchTerm }));
     }
@@ -69,7 +76,6 @@ const BattleArena = ({ characters = [] }) => {
 
   const handleSearch = (event) => {
     event.preventDefault();
-    setVisibleCount(30);
     setSearchTerm(event.target.value);
   };
 
@@ -95,7 +101,7 @@ const BattleArena = ({ characters = [] }) => {
       <div className="character-list">
         {characters.slice(0, visibleCount).map((character) => (
           <button
-            key={`${character.id}-${character.name}`} // Ensure unique key by combining id and name
+            key={`${character.id}-${character.modified}`} // Ensure unique key by combining id and modified date
             className={`character-button ${
               selectedCharacters.includes(character) ? "selected" : ""
             }`}

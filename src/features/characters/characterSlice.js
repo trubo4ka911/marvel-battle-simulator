@@ -36,6 +36,12 @@ const characterSlice = createSlice({
     total: 0,
     searchTerm: "",
   },
+  reducers: {
+    clearCharacters: (state) => {
+      state.characters = [];
+      state.total = 0;
+    },
+  },
   extraReducers: (builder) => {
     builder
       .addCase(fetchCharacters.pending, (state) => {
@@ -61,4 +67,5 @@ const characterSlice = createSlice({
   },
 });
 
+export const { clearCharacters } = characterSlice.actions;
 export default characterSlice.reducer;
