@@ -23,6 +23,7 @@ export const fetchCharacters = createAsyncThunk(
       characters: response.data.data.results,
       total: response.data.data.total,
       searchTerm,
+      offset,
     };
   }
 );
@@ -49,9 +50,11 @@ const characterSlice = createSlice({
       })
       .addCase(fetchCharacters.fulfilled, (state, action) => {
         state.status = "succeeded";
-        if (action.payload.searchTerm !== state.searchTerm) {
+        if (
+          action.payload.offset === 0 ||
+          action.payload.searchTerm !== state.searchTerm
+        ) {
           state.characters = action.payload.characters;
-          state.searchTerm = action.payload.searchTerm;
         } else {
           state.characters = [
             ...state.characters,
@@ -59,6 +62,7 @@ const characterSlice = createSlice({
           ];
         }
         state.total = action.payload.total;
+        state.searchTerm = action.payload.searchTerm;
       })
       .addCase(fetchCharacters.rejected, (state, action) => {
         state.status = "failed";

@@ -1,18 +1,22 @@
 // src/components/CharacterGallery.jsx
-import React, { useState, useEffect, useRef } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import {
   fetchCharacters,
   clearCharacters,
 } from "../features/characters/characterSlice";
 import Character from "./Character";
+import SearchBar from "./SearchBar";
+import LoadMoreButton from "./LoadMoreButton";
 
 const CharacterGallery = () => {
+  const [searchTerm, setSearchTerm] = useState("");
+  const [visibleCount, setVisibleCount] = useState(30);
   const dispatch = useDispatch();
   const characters = useSelector((state) => state.characters.characters);
+  const totalCharacters = useSelector((state) => state.characters.total);
   const status = useSelector((state) => state.characters.status);
   const error = useSelector((state) => state.characters.error);
-  const [searchTerm, setSearchTerm] = useState("");
   const initialFetch = useRef(true);
 
   useEffect(() => {
@@ -23,15 +27,28 @@ const CharacterGallery = () => {
   }, [dispatch]);
 
   useEffect(() => {
-    if (searchTerm) {
+    if (searchTerm !== "") {
       dispatch(clearCharacters());
+      setVisibleCount(30);
       dispatch(fetchCharacters({ limit: 30, offset: 0, searchTerm }));
+    } else {
+      dispatch(clearCharacters());
+      dispatch(fetchCharacters({ limit: 30, offset: 0, searchTerm: "" }));
     }
   }, [dispatch, searchTerm]);
 
-  const handleSearch = (event) => {
-    event.preventDefault();
-    setSearchTerm(event.target.value);
+  const handleLoadMore = () => {
+    const currentLength = characters.length;
+    if (currentLength < totalCharacters) {
+      dispatch(
+        fetchCharacters({ limit: 20, offset: currentLength, searchTerm })
+      );
+      setVisibleCount((prev) => prev + 20);
+    }
+  };
+
+  const handleSearch = (searchTerm) => {
+    setSearchTerm(searchTerm);
   };
 
   if (status === "loading") return <div>Loading...</div>;
@@ -40,15 +57,7 @@ const CharacterGallery = () => {
   return (
     <div>
       <h1>Marvel Characters</h1>
-      <form onSubmit={handleSearch}>
-        <input
-          type="text"
-          value={searchTerm}
-          onChange={(e) => setSearchTerm(e.target.value)}
-          placeholder="Search for a character"
-        />
-        <button type="submit">Search</button>
-      </form>
+      <SearchBar onSearch={handleSearch} />
       <div style={{ display: "flex", flexWrap: "wrap" }}>
         {characters.map((character) => (
           <Character
@@ -57,6 +66,10 @@ const CharacterGallery = () => {
           />
         ))}
       </div>
+      <LoadMoreButton
+        onLoadMore={handleLoadMore}
+        isVisible={visibleCount < totalCharacters}
+      />
     </div>
   );
 };
