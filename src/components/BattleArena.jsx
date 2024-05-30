@@ -78,6 +78,10 @@ const BattleArena = ({ characters = [] }) => {
     dispatch(resetBattle());
   };
 
+  const handleResetSelected = (character) => {
+    setSelectedCharacters((prev) => prev.filter((c) => c !== character));
+  };
+
   const handleSearch = (searchTerm) => {
     setSearchTerm(searchTerm);
   };
@@ -93,12 +97,37 @@ const BattleArena = ({ characters = [] }) => {
       )}
       <h2>Select two characters to battle</h2>
       <SearchBar onSearch={handleSearch} />
+      <div className="selected-characters">
+        {selectedCharacters.map((character) => (
+          <div key={character.id} className="selected-character">
+            <img
+              src={`${character.thumbnail.path}.${character.thumbnail.extension}`}
+              alt={character.name}
+            />
+            <p>{character.name}</p>
+            <button onClick={() => handleResetSelected(character)}>
+              Reset
+            </button>
+          </div>
+        ))}
+        {selectedCharacters.length < 2 &&
+          Array.from({ length: 2 - selectedCharacters.length }).map(
+            (_, index) => (
+              <div
+                key={`placeholder-${index}`}
+                className="selected-character placeholder"
+              >
+                <p>Select a character</p>
+              </div>
+            )
+          )}
+      </div>
       <div className="character-list">
         {characters.slice(0, visibleCount).map((character) => (
           <button
             key={`${character.id}-${character.modified}`} // Ensure unique key by combining id and modified date
             className={`character-button ${
-              selectedCharacters.includes(character) ? "selected" : ""
+              selectedCharacters.includes(character) ? "hidden" : ""
             }`}
             onClick={() => handleSelectCharacter(character)}
             disabled={
@@ -116,7 +145,9 @@ const BattleArena = ({ characters = [] }) => {
       </div>
       <LoadMoreButton
         onLoadMore={handleLoadMore}
-        isVisible={visibleCount < totalCharacters}
+        isVisible={
+          visibleCount < totalCharacters && selectedCharacters.length < 2
+        }
       />
       <button onClick={handleBattle} disabled={selectedCharacters.length !== 2}>
         Battle!

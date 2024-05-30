@@ -106,3 +106,15 @@
     background-color: #0056b3;
   }
 }
+.character-button.hidden {
+  display: none;
+}
+
+.search-bar {
+  display: flex;
+  gap: 10px;
+}
+
+.search-bar input {
+  flex-grow: 1;
+}
