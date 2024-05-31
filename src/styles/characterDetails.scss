@@ -1,44 +1,94 @@
-@import "variables";
-@import "mixins";
-
+/* src/styles/characterDetails.scss */
 .character-details {
-  @include flex-center;
-  flex-direction: column;
-  margin-top: 20px;
+  padding: 20px;
+  background-color: #1a1a1a;
+  color: #fff;
+  min-height: 100vh;
+  text-align: center;
 
-  img {
-    width: 300px;
-    border-radius: 8px;
+  h2 {
+    text-align: center;
+    font-size: 36px;
+    color: #e62429;
+    text-shadow: 2px 2px #000;
+  }
+
+  .tabs {
+    display: flex;
+    justify-content: center;
+    margin-top: 20px;
     margin-bottom: 20px;
+
+    button {
+      background-color: #333;
+      color: #fff;
+      border: none;
+      padding: 10px 20px;
+      margin: 0 5px;
+      cursor: pointer;
+      font-size: 16px;
+      border-radius: 5px;
+
+      &:hover {
+        background-color: #444;
+      }
+
+      &.active {
+        background-color: #e62429;
+        color: #fff;
+      }
+    }
   }
 
-  ul {
-    list-style-type: none;
-    padding: 0;
+  .tab-content {
+    padding: 20px;
+    background-color: #2c2c2c;
+    border-radius: 10px;
+    text-align: left;
+
+    ul {
+      list-style-type: none;
+      padding: 0;
+
+      li {
+        margin: 10px 0;
+        font-size: 18px;
+        color: #fff;
+      }
+    }
   }
 
-  li {
-    margin: 5px 0;
-  }
-}
-.tabs button {
-  padding: 10px;
-  margin-right: 5px;
-  background-color: transparent;
-  border: none;
-  border-bottom: 3px solid transparent;
-  cursor: pointer;
-  &:hover,
-  &.active {
-    border-bottom-color: $primary-color;
-  }
-}
+  .character-thumbnail {
+    display: flex;
+    justify-content: center;
+    margin-top: 20px;
 
-.tab-content ul {
-  list-style: none;
-  padding: 0;
-}
+    img {
+      border-radius: 10px;
+      max-width: 100%;
+      height: auto;
+    }
+  }
 
-.tab-content li {
-  margin: 5px 0;
+  .character-description {
+    margin: 20px 0;
+    font-size: 18px;
+    color: #fff;
+    text-align: center;
+  }
+
+  .character-urls {
+    margin: 20px 0;
+    font-size: 18px;
+    text-align: center;
+
+    a {
+      color: #e62429;
+      text-decoration: none;
+
+      &:hover {
+        text-decoration: underline;
+      }
+    }
+  }
 }

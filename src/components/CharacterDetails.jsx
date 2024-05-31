@@ -1,8 +1,9 @@
-// src/components/CharacterDetails.js
+// src/components/CharacterDetails.jsx
 import React, { useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
 import axios from "axios";
 import { generateHash } from "../utils/auth";
+import Spinner from "./Spinner";
 import "../styles/characterDetails.scss";
 
 const CharacterDetails = () => {
@@ -41,12 +42,22 @@ const CharacterDetails = () => {
     fetchCharacter();
   }, [characterId]);
 
-  if (loading) return <div>Loading...</div>;
+  if (loading) return <Spinner />;
   if (error) return <div>Error: {error}</div>;
   if (!character) return <div>No character found</div>;
 
   return (
     <div className="character-details">
+      <h2>{character.name}</h2>
+      <div className="character-thumbnail">
+        <img
+          src={`${character.thumbnail.path}.${character.thumbnail.extension}`}
+          alt={character.name}
+        />
+      </div>
+      {character.description && (
+        <div className="character-description">{character.description}</div>
+      )}
       <div className="tabs">
         <button
           onClick={() => setActiveTab("comics")}
@@ -65,6 +76,12 @@ const CharacterDetails = () => {
           className={activeTab === "series" ? "active" : ""}
         >
           Series
+        </button>
+        <button
+          onClick={() => setActiveTab("stories")}
+          className={activeTab === "stories" ? "active" : ""}
+        >
+          Stories
         </button>
       </div>
       <div className="tab-content">
@@ -89,7 +106,26 @@ const CharacterDetails = () => {
             ))}
           </ul>
         )}
+        {activeTab === "stories" && (
+          <ul>
+            {character.stories.items.map((story, index) => (
+              <li key={index}>{story.name}</li>
+            ))}
+          </ul>
+        )}
       </div>
+      {character.urls.length > 0 && (
+        <div className="character-urls">
+          <h3>Related Links</h3>
+          {character.urls.map((url, index) => (
+            <p key={index}>
+              <a href={url.url} target="_blank" rel="noopener noreferrer">
+                {url.type}
+              </a>
+            </p>
+          ))}
+        </div>
+      )}
     </div>
   );
 };

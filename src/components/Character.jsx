@@ -1,5 +1,4 @@
-// Assuming Character component is being used in CharacterGallery
-// src/components/Character.js
+// src/components/Character.jsx
 import React from "react";
 import { Link } from "react-router-dom";
 
@@ -12,7 +11,7 @@ const Character = ({ character }) => {
           alt={character.name}
           style={{ width: 100, height: 100 }}
         />
-        <h3>{character.name}</h3>
+        <p>{character.name}</p>
       </Link>
     </div>
   );

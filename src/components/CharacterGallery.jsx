@@ -7,15 +7,16 @@ import {
 } from "../features/characters/characterSlice";
 import Character from "./Character";
 import SearchBar from "./SearchBar";
-import LoadMoreButton from "./LoadMoreButton";
+import Spinner from "./Spinner";
+import "../styles/characterGallery.scss";
 
 const CharacterGallery = () => {
   const [searchTerm, setSearchTerm] = useState("");
   const [visibleCount, setVisibleCount] = useState(30);
   const dispatch = useDispatch();
   const characters = useSelector((state) => state.characters.characters);
-  const totalCharacters = useSelector((state) => state.characters.total);
   const status = useSelector((state) => state.characters.status);
+  const totalCharacters = useSelector((state) => state.characters.total);
   const error = useSelector((state) => state.characters.error);
   const initialFetch = useRef(true);
 
@@ -27,49 +28,61 @@ const CharacterGallery = () => {
   }, [dispatch]);
 
   useEffect(() => {
-    if (searchTerm !== "") {
+    if (initialFetch.current === false) {
+      dispatch(fetchCharacters({ limit: 30, offset: 0, searchTerm: "" }));
+    }
+  }, [dispatch]);
+
+  useEffect(() => {
+    if (searchTerm) {
       dispatch(clearCharacters());
       setVisibleCount(30);
       dispatch(fetchCharacters({ limit: 30, offset: 0, searchTerm }));
-    } else {
-      dispatch(clearCharacters());
-      dispatch(fetchCharacters({ limit: 30, offset: 0, searchTerm: "" }));
     }
   }, [dispatch, searchTerm]);
-
-  const handleLoadMore = () => {
-    const currentLength = characters.length;
-    if (currentLength < totalCharacters) {
-      dispatch(
-        fetchCharacters({ limit: 20, offset: currentLength, searchTerm })
-      );
-      setVisibleCount((prev) => prev + 20);
-    }
-  };
 
   const handleSearch = (searchTerm) => {
     setSearchTerm(searchTerm);
   };
 
-  if (status === "loading") return <div>Loading...</div>;
-  if (status === "failed") return <div>Error: {error}</div>;
+  const handleLoadMore = () => {
+    const currentLength = characters.length;
+    if (currentLength < totalCharacters) {
+      dispatch(
+        fetchCharacters({
+          limit: 30,
+          offset: currentLength,
+          searchTerm,
+        })
+      );
+      setVisibleCount((prev) => prev + 30);
+    }
+  };
 
   return (
-    <div>
+    <div className="character-gallery">
+      {status === "loading" && <Spinner />}
       <h1>Marvel Characters</h1>
-      <SearchBar onSearch={handleSearch} />
-      <div style={{ display: "flex", flexWrap: "wrap" }}>
+      <div className="search-bar">
+        <SearchBar onSearch={handleSearch} />
+      </div>
+      <div className="character-list">
         {characters.map((character) => (
-          <Character
+          <div
+            className="character-card"
             key={`${character.id}-${character.modified}`}
-            character={character}
-          />
+          >
+            <Character character={character} />
+          </div>
         ))}
       </div>
-      <LoadMoreButton
-        onLoadMore={handleLoadMore}
-        isVisible={visibleCount < totalCharacters}
-      />
+      {visibleCount < totalCharacters && (
+        <div className="load-more">
+          <button className="load-more-button" onClick={handleLoadMore}>
+            Load More
+          </button>
+        </div>
+      )}
     </div>
   );
 };

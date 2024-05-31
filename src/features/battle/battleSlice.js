@@ -4,6 +4,7 @@ import { createSlice } from "@reduxjs/toolkit";
 const initialState = {
   contenders: [],
   results: null,
+  narrative: "",
 };
 
 const battleSlice = createSlice({
@@ -16,9 +17,11 @@ const battleSlice = createSlice({
     resetBattle: (state) => {
       state.contenders = [];
       state.results = null;
+      state.narrative = "";
     },
     setResults: (state, action) => {
-      state.results = action.payload;
+      state.results = action.payload.winner;
+      state.narrative = action.payload.narrative;
     },
   },
 });
