@@ -6,9 +6,11 @@ import Navigation from "./components/Navigation";
 import CharacterGallery from "./components/CharacterGallery";
 import CharacterDetails from "./components/CharacterDetails";
 import BattleArena from "./components/BattleArena";
-import AddHero from "./components/AddHeroForm";
+import AddHeroForm from "./components/AddHeroForm";
 import About from "./components/About";
 import HeroesList from "./components/HeroesList";
+import UserProfile from "./components/UserProfile";
+import "./styles/_main.scss";
 
 function App() {
   const dispatch = useDispatch();
@@ -29,9 +31,10 @@ function App() {
           path="/battle-arena"
           element={<BattleArena characters={characters} />}
         />
-        <Route path="/add-hero" element={<AddHero />} />
-        <Route path="/heroes" component={HeroesList} />
+        <Route path="/add-hero" element={<AddHeroForm />} />
+        <Route path="/heroes" element={<HeroesList />} />
         <Route path="/about" element={<About />} />
+        <Route path="/profile" element={<UserProfile />} />
       </Routes>
     </Router>
   );

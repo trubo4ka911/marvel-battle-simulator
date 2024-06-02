@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 import axios from "axios";
-import "../styles/addHeroForm.scss";
+import { useNavigate } from "react-router-dom";
 
 const icons = [
   "icon-cyclop-marvel",
@@ -29,28 +29,31 @@ const icons = [
   "icon-rogue",
 ];
 
-const AddHero = () => {
+const AddHeroForm = () => {
   const [name, setName] = useState("");
   const [description, setDescription] = useState("");
   const [selectedIcon, setSelectedIcon] = useState(icons[0]);
+  const navigate = useNavigate();
 
   const handleIconClick = (icon) => {
     setSelectedIcon(icon);
   };
 
-  const handleSubmit = async (e) => {
+  const handleSubmit = (e) => {
     e.preventDefault();
-    const newHero = {
-      name,
-      description,
-      imageUrl: `/marvel.min.svg#${selectedIcon}`,
-    };
-
-    try {
-      await axios.post("http://localhost:5000/api/heroes", newHero);
-    } catch (error) {
-      console.error("There was an error creating the hero!", error);
-    }
+    axios
+      .post("http://localhost:5000/api/heroes", {
+        name,
+        description,
+        imageUrl: selectedIcon,
+      })
+      .then((response) => {
+        console.log("Hero added:", response.data);
+        navigate("/profile"); // Navigate to profile to see updated heroes
+      })
+      .catch((error) => {
+        console.error("Error adding hero:", error);
+      });
   };
 
   return (
@@ -100,4 +103,4 @@ const AddHero = () => {
   );
 };
 
-export default AddHero;
+export default AddHeroForm;

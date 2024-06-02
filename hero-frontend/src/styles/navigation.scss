@@ -1,0 +1,27 @@
+@import "./variables";
+@import "./mixins";
+
+.navigation {
+  background-color: $secondary-color;
+  color: $text-color;
+  padding: 1em;
+
+  ul {
+    list-style-type: none;
+    display: flex;
+    justify-content: space-around;
+    margin: 0;
+    padding: 0;
+
+    li {
+      a {
+        color: $text-color;
+        text-decoration: none;
+
+        &.active {
+          text-decoration: underline;
+        }
+      }
+    }
+  }
+}
