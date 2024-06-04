@@ -1,0 +1,32 @@
+.up-button {
+  position: fixed;
+  bottom: 20px;
+  right: 20px;
+  background-color: #ff0000; /* Update this to match your site's style */
+  color: white;
+  border: none;
+  border-radius: 50%;
+  width: 50px;
+  height: 50px;
+  font-size: 16px;
+  cursor: pointer;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+  z-index: 1000;
+  transition: opacity 0.3s, visibility 0.3s;
+  opacity: 0;
+  visibility: hidden;
+}
+
+.up-button.visible {
+  opacity: 1;
+  visibility: visible;
+}
+
+.up-button.hidden {
+  opacity: 0;
+  visibility: hidden;
+}
+
+.up-button:hover {
+  background-color: #cc0000; /* Update this to match your site's style */
+}

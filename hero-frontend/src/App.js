@@ -10,6 +10,7 @@ import AddHeroForm from "./components/AddHeroForm";
 import About from "./components/About";
 import HeroesList from "./components/HeroesList";
 import UserProfile from "./components/UserProfile";
+import UpButton from "./components/UpButton";
 import "./styles/_main.scss";
 
 function App() {
@@ -25,7 +26,9 @@ function App() {
     <Router>
       <Navigation />
       <Routes>
-        <Route path="/" element={<CharacterGallery />} />
+        {/* <Route path="/" element={<CharacterGallery />} /> */}
+        <Route path="/" element={<About />} />
+        <Route path="/characters" element={<CharacterGallery />} />
         <Route path="/character/:characterId" element={<CharacterDetails />} />
         <Route
           path="/battle-arena"
@@ -33,9 +36,9 @@ function App() {
         />
         <Route path="/add-hero" element={<AddHeroForm />} />
         <Route path="/heroes" element={<HeroesList />} />
-        <Route path="/about" element={<About />} />
         <Route path="/profile" element={<UserProfile />} />
       </Routes>
+      <UpButton />
     </Router>
   );
 }

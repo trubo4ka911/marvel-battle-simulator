@@ -1,10 +1,12 @@
 import React from "react";
 import "../styles/about.scss";
+import bgImage from "../assets/img/bg.png";
 
 const About = () => {
   return (
     <div className="about-container">
       <h1>About Marvel Battle Simulator</h1>
+      <img src={bgImage} alt="marvel" className="about-image" />
       <p>
         Welcome to the Marvel Battle Simulator app! This application is built to
         provide detailed information about Marvel characters and simulate
