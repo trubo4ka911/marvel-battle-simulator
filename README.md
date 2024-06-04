@@ -46,3 +46,12 @@ Color Contrast: Check that text and background colors have sufficient contrast.
 Lazy Loading: Implement lazy loading for images and content that is not immediately visible.
 Caching Strategies: Utilize caching to reduce the number of API requests and speed up load times.
 Service Workers: Consider using service workers for offline capabilities and to cache assets.
+
+Initial State: Define the initial state of the slice.
+Reducers: Define reducer functions to handle actions directly related to the characters' slice.
+Extra Reducers: Handle asynchronous actions or actions that originate from outside the slice.
+
+Async Thunk (fetchCharacters): This function is for asynchronous operations, fetching data from the Marvel API and then dispatching actions based on the request's outcome.
+Slice Definition: Includes everything from the initial state to the reducers and extra reducers. The createSlice function automatically generates action creators and action types that correspond to the reducers and state.
+
+Extra Reducers: These are used for handling actions defined outside of the slice, particularly useful for handling asynchronous logic like API requests.

@@ -1,0 +1,37 @@
+@import "./variables";
+@import "./mixins";
+
+.navigation {
+  background-color: $secondary-color;
+  color: $text-color;
+  padding: 1em;
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  z-index: 1000;
+
+  ul {
+    list-style-type: none;
+    display: flex;
+    justify-content: space-around;
+    margin: 0;
+    padding: 0;
+
+    li {
+      a {
+        color: $text-color;
+        text-decoration: none;
+
+        &.active {
+          text-decoration: underline;
+        }
+      }
+    }
+  }
+}
+
+// Adding padding to the body to prevent content from being hidden behind the fixed navigation
+body {
+  padding-top: 3em; // Adjust this value based on the height of your navigation bar
+}
