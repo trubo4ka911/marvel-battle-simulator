@@ -4,7 +4,7 @@
 body,
 html {
   margin: 0;
-  padding: 0;
+  padding: 3em 2em;
   height: 100%;
   background-color: $background-color;
 }
@@ -35,13 +35,13 @@ h2 {
     padding: 10px;
     font-size: 1em;
     border-radius: $border-radius 0 0 $border-radius;
-    border: 1px solid #ccc;
+    border: $border;
     outline: none;
     width: 200px;
   }
 
   button {
-    @include button-style($primary-color, #c51c22);
+    @include button-style($primary-color, $button-color);
     border-radius: 0 $border-radius $border-radius 0;
     padding: 10px;
     font-size: 1em;
@@ -81,7 +81,7 @@ h2 {
   }
 
   button {
-    @include button-style($primary-color, #c51c22);
+    @include button-style($primary-color, $button-color);
     padding: 5px 10px;
     font-size: 0.9em;
   }
@@ -95,7 +95,7 @@ h2 {
   .character-button {
     margin: 10px;
     padding: 10px;
-    border: 1px solid #ccc;
+    border: $border;
     border-radius: $border-radius;
     background-color: #282c34;
     color: $text-color;
@@ -126,7 +126,7 @@ h2 {
 }
 
 .load-more-button {
-  @include button-style($primary-color, #c51c22);
+  @include button-style($primary-color, $button-color);
   padding: 10px 20px;
   font-size: 1em;
   margin-top: 20px;
@@ -165,7 +165,7 @@ button:disabled {
 
 .loser {
   animation: loser-animation 2s ease-in-out infinite;
-  border: 2px solid #e62429;
+  border: 2px solid $primary-color;
   box-shadow: 0 0 15px rgba(230, 36, 41, 0.7);
 }
 
@@ -185,7 +185,7 @@ button:disabled {
 }
 
 .battle-button {
-  @include button-style($primary-color, #c51c22);
+  @include button-style($primary-color, $button-color);
   padding: 10px 20px;
   font-size: 1em;
   margin-top: 20px;
@@ -204,7 +204,7 @@ button:disabled {
 .battle-result {
   margin-top: 20px;
   padding: 10px;
-  background-color: #333;
+  background-color: $secondary-bg-color;
   border-radius: 10px;
   box-shadow: $box-shadow;
 

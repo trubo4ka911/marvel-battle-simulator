@@ -15,7 +15,6 @@ const CharacterGallery = () => {
   const characters = useSelector((state) => state.characters.characters);
   const status = useSelector((state) => state.characters.status);
   const totalCharacters = useSelector((state) => state.characters.total);
-  const error = useSelector((state) => state.characters.error);
   const initialFetch = useRef(true);
 
   useEffect(() => {

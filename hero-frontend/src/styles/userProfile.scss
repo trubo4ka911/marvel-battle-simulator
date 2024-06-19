@@ -20,7 +20,7 @@
       justify-content: space-between;
       padding: 10px;
       margin: 10px 0;
-      background-color: #333;
+      background-color: $secondary-bg-color;
       color: $text-color;
       border-radius: $border-radius;
 
@@ -30,7 +30,7 @@
       }
 
       button {
-        @include button-style(red, darkred);
+        @include button-style($primary-color, $button-color);
         padding: 5px 10px;
         border-radius: 3px;
       }

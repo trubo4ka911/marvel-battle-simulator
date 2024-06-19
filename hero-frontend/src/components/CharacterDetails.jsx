@@ -38,7 +38,7 @@ const CharacterDetails = () => {
     };
 
     fetchCharacter();
-  }, [characterId]);
+  }, [characterId, API_PRIVATE_KEY, API_PUBLIC_KEY]);
 
   if (loading) return <Spinner />;
   if (error) return <div>Error: {error}</div>;

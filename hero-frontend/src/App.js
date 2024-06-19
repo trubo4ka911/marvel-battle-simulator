@@ -26,7 +26,6 @@ function App() {
     <Router>
       <Navigation />
       <Routes>
-        {/* <Route path="/" element={<CharacterGallery />} /> */}
         <Route path="/" element={<About />} />
         <Route path="/characters" element={<CharacterGallery />} />
         <Route path="/character/:characterId" element={<CharacterDetails />} />

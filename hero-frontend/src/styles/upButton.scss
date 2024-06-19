@@ -1,9 +1,10 @@
+@import "./variables";
 .up-button {
   position: fixed;
   bottom: 20px;
   right: 20px;
-  background-color: #ff0000; /* Update this to match your site's style */
-  color: white;
+  background-color: $primary-color; /* Update this to match your site's style */
+  color: $text-color;
   border: none;
   border-radius: 50%;
   width: 50px;
@@ -28,5 +29,5 @@
 }
 
 .up-button:hover {
-  background-color: #cc0000; /* Update this to match your site's style */
+  background-color: $button-color; /* Update this to match your site's style */
 }
