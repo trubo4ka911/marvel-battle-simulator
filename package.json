@@ -5,14 +5,10 @@
   "main": "index.js",
   "scripts": {
     "start": "concurrently \"npm run start:frontend\" \"npm run start:backend\"",
-    "start:frontend": "cd hero-frontend && npm start",
-    "start:backend": "cd hero-backend && npm start",
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "start:frontend": "npm --prefix hero-frontend start",
+    "start:backend": "npm --prefix hero-backend start"
   },
-  "keywords": [],
-  "author": "",
-  "license": "ISC",
-  "devDependencies": {
-    "concurrently": "^8.2.2"
+  "dependencies": {
+    "concurrently": "^7.0.0"
   }
 }
